@@ -2,6 +2,7 @@ const form = document.querySelector('#form-cep');
 const cep = document.querySelector('#cep')
 const table = document.querySelector('#enderecos-tbody');
 const clear = document.querySelector('#btn-clean');
+const message = document.querySelector('#start-wrapper');
 
 let cepList = JSON.parse(localStorage.getItem('ceps'));
 
@@ -9,6 +10,7 @@ form.addEventListener('submit', async function(e){
     e.preventDefault();
     const cepInfo = await getCepInfo(cep.value.replace(/[^0-9]/g, ''));
     cep.value = '';
+    message.classList.add('hidde');
     createHtmlElement(cepInfo);
     let ceps = JSON.parse(localStorage.getItem('ceps'));
     let cepStorage = ceps ? [ ...ceps, cepInfo ] : [ cepInfo ]
@@ -18,15 +20,14 @@ form.addEventListener('submit', async function(e){
 clear.addEventListener('click',function(){
     table.innerHTML = '';
     localStorage.clear();
+    message.classList.remove('hidde');
 });
 
 const getCepInfo = async (cep) => {
 
     const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
     const info = await response.json();
-
     return info;
-
 }
 
 const createHtmlElement = (data) => {
